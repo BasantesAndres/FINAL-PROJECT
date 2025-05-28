@@ -6,6 +6,8 @@
 #include "als.h"
 #include "metrics.h"
 #include "extensions.h"
+#include <fstream>
+
 
 int main() {
     std::vector<Rating> ratings = load_ratings("data/ratings.csv");
@@ -39,6 +41,29 @@ int main() {
     std::cout << "Top 5 recommendations for user " << example_user << ": ";
     for (int id : recommendations) std::cout << id << " ";
     std::cout << std::endl;
+
+
+std::vector<int> selected_users = {1, 5, 10, 20, 50};
+
+std::ofstream top5_out("top5.csv");
+top5_out << "user_id,rec1,rec2,rec3,rec4,rec5\n";
+
+for (int uid : selected_users) {
+    auto recs = recommend_top_n(U_als[uid], V_als, 5);
+    top5_out << uid;
+    for (int movie_id : recs) {
+        top5_out << "," << movie_id;
+    }
+    top5_out << "\n";
+
+
+    std::cout << "Top 5 recommendations for user " << uid << ": ";
+    for (int movie_id : recs) std::cout << movie_id << " ";
+    std::cout << std::endl;
+}
+
+top5_out.close();
+
 
     return 0;
 }
