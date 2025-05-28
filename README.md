@@ -96,7 +96,6 @@ Place this file in: data/ratings.csv
 > ```sh
 > ./recommend    In WINDOWS
 
-> ```
 
 📊 Output & Evaluation
 During execution, you will see output like:
@@ -108,19 +107,6 @@ SGD MAE:  0.6667
 Training with ALS...
 ALS RMSE: 0.6849
 ALS MAE:  0.5263
-Additionally, the following files will be generated:
-
-sgd_metrics.csv and als_metrics.csv: RMSE/MAE per iteration
-
-als_vs_sgd_all_graphs.xlsx: includes:
-
-ALS RMSE plot
-
-ALS MAE plot
-
-SGD RMSE plot
-
-SGD MAE plot
 
 
 🤖 ALS vs. SGD Comparison
