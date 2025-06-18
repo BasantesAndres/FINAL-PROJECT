@@ -177,27 +177,24 @@ Simple implementations
 
 ```
 📦 movie-recommendation-cpp/
-├── 📁 data/
-│   └── 📄 ratings.csv              # Preprocessed MovieLens 100K dataset
-├── 📁 include/
-│   ├── 📄 ALS.hpp                  # ALS algorithm header
-│   ├── 📄 SGD.hpp                  # SGD algorithm header
-│   ├── 📄 MatrixFactorization.hpp  # Base class interface
-│   └── 📄 utils.hpp                # Utility functions and metrics
-├── 📁 src/
-│   ├── 📄 ALS.cpp                  # ALS implementation
-│   ├── 📄 SGD.cpp                  # SGD implementation
-│   ├── 📄 main.cpp                 # Main program and experiments
-│   └── 📄 utils.cpp                # Helper functions
-├── 📁 results/
-│   ├── 📄 performance_metrics.txt  # Final RMSE/MAE results
-│   └── 📄 convergence_data.csv     # Iteration-by-iteration metrics
-├── 📁 plots/
-│   ├── 📊 als_convergence.png      # ALS learning curves
-│   └── 📊 sgd_convergence.png      # SGD learning curves
-├── 📄 Makefile                     # Build configuration
-├── 📄 requirements.txt             # Dataset requirements
-└── 📄 README.md                    # This file
+├── 📁 data/                 
+│   └── 📄 ratings.csv            # Input dataset (movie ratings)
+├── 📁 eigen/                    
+│   └── 📄 [Eigen library]        # Eigen library used for algebraic operations
+├── 📄 als                      # ALS (Alternating Least Squares) implementation
+├── 📄 als_metrics              # Evaluation metrics from ALS
+├── 📄 als_time                 # ALS training time
+├── 📄 extensions               # Additional extensions or configuration files
+├── 📄 main                     # Main file that runs the program
+├── 📄 matrix_loader            # Loads matrix-format data
+├── 📄 metrics                  # Metric evaluation (e.g., RMSE, MAE)
+├── 📄 recommend                # Core logic of the recommendation system
+├── 📄 sgd                      # SGD (Stochastic Gradient Descent) implementation
+├── 📄 sgd_metrics              # Evaluation metrics from SGD
+├── 📄 sgd_time                 # SGD training time
+├── 📄 top5                    # Output with top 5 movie recommendations
+├── 📄 README                   # Project documentation
+
 ```
 
 ---
