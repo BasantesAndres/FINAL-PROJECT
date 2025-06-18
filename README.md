@@ -104,11 +104,6 @@ Where `k` is the number of latent dimensions.
 3. Fix U and solve for V
 4. Repeat until convergence
 
-**Mathematical Form**:
-
-U_i = (VᵀV + λI)⁻¹ * Vᵀ * R_i
-V_j = (UᵀU + λI)⁻¹ * Uᵀ * R_j
-Best for:
 
 Offline batch processing
 
@@ -128,8 +123,6 @@ Scenarios where parallel processing is possible
 - **Computational Cost**: O(k³ + nk²) complexity per iteration
 - **Batch Only**: Not suitable for real-time online learning
 
-### 🔹 Stochastic Gradient Descent (SGD)
-SGD updates factors incrementally using gradient-based optimization for each observed rating.
 
 
 ---
@@ -137,6 +130,7 @@ SGD updates factors incrementally using gradient-based optimization for each obs
 ## 🧠 Algorithms Implemented
 
 ### 🔹 Stochastic Gradient Descent (SGD)
+SGD updates factors incrementally using gradient-based optimization for each observed rating.
 
 
 How It Works:
@@ -181,15 +175,20 @@ Simple implementations
 │   └── 📄 ratings.csv            # Input dataset (movie ratings)
 ├── 📁 eigen/                    
 │   └── 📄 [Eigen library]        # Eigen library used for algebraic operations
-├── 📄 als                      # ALS (Alternating Least Squares) implementation
+├── 📄 als.cpp                      # ALS (Alternating Least Squares) implementation
+├── 📄 als.h                      # ALS (Alternating Least Squares) header
 ├── 📄 als_metrics              # Evaluation metrics from ALS
 ├── 📄 als_time                 # ALS training time
-├── 📄 extensions               # Additional extensions or configuration files
-├── 📄 main                     # Main file that runs the program
-├── 📄 matrix_loader            # Loads matrix-format data
-├── 📄 metrics                  # Metric evaluation (e.g., RMSE, MAE)
+├── 📄 extensions.cpp              # Additional extensions or configuration files
+├── 📄 extensions.h               # Additional header
+├── 📄 main.cpp                     # Main file that runs the program
+├── 📄 matrix_loader.cpp            # Loads matrix-format data
+├── 📄 matrix_loader.h            # Loads matrix-format data header
+├── 📄 metrics.cpp                  # Metric evaluation (e.g., RMSE, MAE)
+├── 📄 metrics.h                  # Metric evaluation (e.g., RMSE, MAE) header
 ├── 📄 recommend                # Core logic of the recommendation system
-├── 📄 sgd                      # SGD (Stochastic Gradient Descent) implementation
+├── 📄 sgd,cpp                      # SGD (Stochastic Gradient Descent) implementation
+├── 📄 sgd.h                      # SGD (Stochastic Gradient Descent) header
 ├── 📄 sgd_metrics              # Evaluation metrics from SGD
 ├── 📄 sgd_time                 # SGD training time
 ├── 📄 top5                    # Output with top 5 movie recommendations
@@ -211,14 +210,6 @@ Customize the algorithms by modifying these parameters in `main.cpp`:
 | `max_iterations` | Training iterations | 30 | 10-100 |
 | `train_ratio` | Training/test split | 0.8 | 0.7-0.9 |
 
-### Example Configuration:
-```cpp
-// Optimal parameters found through experimentation
-const int k = 50;              // Latent factors
-const double lambda = 0.1;     // Regularization
-const double eta = 0.01;       // SGD learning rate
-const int iterations = 30;     // Max iterations
-```
 
 ---
 
