@@ -13,7 +13,7 @@ void train_sgd(const std::vector<Rating>& ratings,
     std::vector<double> rmse_history;
     std::vector<double> mae_history;
 
-    // Inicializar U y V
+//initiate u and V
     std::default_random_engine engine;
     std::uniform_real_distribution<double> dist(0.0, 1.0);
     for (auto& u : U) for (int i = 0; i < k; ++i) u[i] = dist(engine);
@@ -31,7 +31,7 @@ void train_sgd(const std::vector<Rating>& ratings,
             V[i] += learning_rate * (error * U[u] - lambda * V[i]);
         }
 
-        // Guardar métricas por iteración
+        // save metrics
         double rmse = compute_rmse(ratings, U, V);
         double mae = compute_mae(ratings, U, V);
         rmse_history.push_back(rmse);
@@ -41,7 +41,6 @@ void train_sgd(const std::vector<Rating>& ratings,
     auto end = std::chrono::high_resolution_clock::now();
     double total_sec = std::chrono::duration<double>(end - start).count();
 
-    // Guardar CSV
     std::ofstream out("sgd_metrics.csv");
     out << "iteration,rmse,mae\n";
     for (int i = 0; i < rmse_history.size(); ++i)

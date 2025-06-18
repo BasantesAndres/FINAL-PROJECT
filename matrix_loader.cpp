@@ -13,7 +13,7 @@ std::vector<Rating> load_ratings(const std::string& filename) {
         return ratings;
     }
 
-    std::getline(file, line); // skip header
+    std::getline(file, line); 
     while (std::getline(file, line)) {
         std::stringstream ss(line);
         std::string user, item, rate;

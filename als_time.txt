@@ -1,1 +1,1 @@
-ALS training time (s): 112.257
+ALS training time (s): 119.133

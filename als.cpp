@@ -14,7 +14,7 @@ void train_als(const std::vector<Rating>& ratings,
     std::vector<double> rmse_history;
     std::vector<double> mae_history;
 
-    // Inicializar U y V
+
     std::default_random_engine engine;
     std::uniform_real_distribution<double> dist(0.0, 1.0);
     for (auto& u : U) for (int i = 0; i < k; ++i) u[i] = dist(engine);
@@ -23,7 +23,7 @@ void train_als(const std::vector<Rating>& ratings,
     auto start = std::chrono::high_resolution_clock::now();
 
     for (int iter = 0; iter < iterations; ++iter) {
-        // Actualiza U
+
         for (int u = 0; u < num_users; ++u) {
             Eigen::MatrixXd A = lambda * Eigen::MatrixXd::Identity(k, k);
             Eigen::VectorXd b = Eigen::VectorXd::Zero(k);
@@ -36,7 +36,6 @@ void train_als(const std::vector<Rating>& ratings,
             U[u] = A.ldlt().solve(b);
         }
 
-        // Actualiza V
         for (int i = 0; i < num_items; ++i) {
             Eigen::MatrixXd A = lambda * Eigen::MatrixXd::Identity(k, k);
             Eigen::VectorXd b = Eigen::VectorXd::Zero(k);

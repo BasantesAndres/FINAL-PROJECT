@@ -1,1 +1,1 @@
-SGD training time (s): 10.5176
+SGD training time (s): 9.10817
