@@ -106,7 +106,6 @@ Where `k` is the number of latent dimensions.
 
 **Mathematical Form**:
 
-```cpp
 U_i = (VᵀV + λI)⁻¹ * Vᵀ * R_i
 V_j = (UᵀU + λI)⁻¹ * Uᵀ * R_j
 Best for:
