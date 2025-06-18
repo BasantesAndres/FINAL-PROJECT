@@ -1,7 +1,6 @@
 # 🎬 Movie Recommendation System: ALS vs SGD Matrix Factorization
 
 [![C++](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.cppreference.com/w/cpp/17)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Dataset](https://img.shields.io/badge/Dataset-MovieLens%20100K-orange.svg)](https://grouplens.org/datasets/movielens/100k/)
 
 A comprehensive **C++ implementation** and **comparative study** of two popular matrix factorization algorithms for building movie recommendation systems. This project implements both **Alternating Least Squares (ALS)** and **Stochastic Gradient Descent (SGD)** algorithms from scratch, providing detailed performance analysis and practical insights for production systems.
