@@ -3,318 +3,249 @@
 [![C++](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.cppreference.com/w/cpp/17)
 [![Dataset](https://img.shields.io/badge/Dataset-MovieLens%20100K-orange.svg)](https://grouplens.org/datasets/movielens/100k/)
 
-A comprehensive **C++ implementation** and **comparative study** of two popular matrix factorization algorithms for building movie recommendation systems. This project implements both **Alternating Least Squares (ALS)** and **Stochastic Gradient Descent (SGD)** algorithms from scratch, providing detailed performance analysis and practical insights for production systems.
+A comprehensive **C++ implementation** and **comparative study** of two matrix factorization algorithms for movie recommendation systems: **Alternating Least Squares (ALS)** and **Stochastic Gradient Descent (SGD)**. This project provides detailed performance analysis, evaluation metrics, architectural overview, and production-oriented insights.
+
+---
 
 ## 🌟 Key Highlights
 
 - **Superior ALS Performance**: 18.45% RMSE improvement over SGD
-- **Production-Ready C++ Code**: Optimized implementations with modern C++ features
-- **Comprehensive Analysis**: Detailed convergence patterns and computational trade-offs
-- **Research-Backed**: Based on academic research with rigorous experimental methodology
-- **Real-World Dataset**: Tested on MovieLens 100K with 100,000 ratings from 943 users
+- **Production-Ready C++ Code**: Clean, optimized, modern C++
+- **Detailed Evaluation**: Accuracy, convergence, and scalability comparisons
+- **Research-Based**: Based on academic methodology and experimentation
+- **Real Dataset**: Uses the MovieLens 100K benchmark dataset
 
 ---
 
 ## 📊 Performance Results
 
-Our experimental results demonstrate clear performance differences between the algorithms:
-
-| Algorithm | Final RMSE | Final MAE | Improvement | Convergence Speed |
-|-----------|------------|-----------|-------------|-------------------|
-| **ALS**   | **0.6849** | **0.5263** | **18.45%** | Fast (10 iterations) |
+| Algorithm | Final RMSE | Final MAE | Improvement | Convergence |
+|-----------|------------|-----------|-------------|-------------|
+| **ALS**   | **0.6849** | **0.5263** | **18.45%**  | Fast (10 iterations) |
 | **SGD**   | 0.8357     | 0.6667     | 12.72%      | Gradual (30+ iterations) |
 
-### 📈 Convergence Patterns
-- **ALS**: Rapid initial improvement with stabilization after ~10 iterations
-- **SGD**: Consistent gradual improvement throughout training process
+### 🔍 Convergence Patterns
+
+- **ALS**: Rapid initial improvement; plateaus after ~10 iterations
+- **SGD**: Consistent, gradual improvement throughout training
 
 ---
 
-## 🧠 Algorithm Deep Dive
+## 🧠 What is a Recommender System?
+
+A **recommender system** is a machine learning model that predicts and suggests items (movies, music, products, etc.) a user might like, based on past interactions.
+
+### 🎯 Why Use Recommenders?
+
+- **Personalization**: Tailor content to individual users
+- **Discovery**: Help users explore new items
+- **Engagement**: Increase time spent on platform
+- **Conversion**: Boost sales or usage (Netflix, Amazon, Spotify)
+- **User Experience**: Make platforms more intuitive and helpful
+
+### 💡 Real-World Examples
+
+- **Netflix**: “Recommended for you”
+- **Amazon**: “Customers also bought…”
+- **Spotify**: “Discover Weekly”
+- **YouTube**: “Suggested Videos”
+
+### ⚠️ The Sparsity Problem
+
+Users only interact with a tiny fraction of items:
+
+- Netflix users rate <1% of all titles
+- Amazon shoppers buy only a few of millions of products
+- Results in >95% of the user-item matrix being empty
+
+---
+
+## 🔢 What is Matrix Factorization?
+
+Matrix factorization is a mathematical technique that breaks a large, sparse matrix into two smaller, dense ones capturing **latent features** of users and items.
+
+### 🎭 Conceptual Example
+
+Imagine each movie and user described by hidden features:
+
+**Movie latent vector**:
+- Action: 0.8
+- Romance: 0.2
+- Comedy: 0.6
+
+**User preference vector**:
+- Likes action: 0.9
+- Likes romance: 0.1
+- Likes comedy: 0.7
+
+**Predicted Rating** = dot(user, movie) = (0.9×0.8) + (0.1×0.2) + (0.7×0.6) = 1.16
+
+### 🧮 Mathematical Representation
+
+Original Matrix (R) ≈ User Matrix (U) × Item Matrix (Vᵀ)
+[943 × 1682] = [943 × k] × [k × 1682]
+
+yaml
+Copiar
+Editar
+
+Where `k` is the number of latent dimensions.
+
+---
+
+## 🧠 Algorithms Implemented
 
 ### 🔸 Alternating Least Squares (ALS)
-ALS alternates between fixing user factors and solving for item factors using closed-form least squares solutions.
+
+**How It Works**:
+
+1. Initialize U and V randomly
+2. Fix V and solve for U using least squares
+3. Fix U and solve for V
+4. Repeat until convergence
+
+**Mathematical Form**:
 
 ```cpp
-// Simplified ALS update formula
-U_i = (V^T * V + λI)^(-1) * V^T * R_i
-V_j = (U^T * U + λI)^(-1) * U^T * R_j
-```
+U_i = (VᵀV + λI)⁻¹ * Vᵀ * R_i
+V_j = (UᵀU + λI)⁻¹ * Uᵀ * R_j
+Best for:
 
-**✅ Advantages:**
-- **Fast Convergence**: Achieves optimal performance in fewer iterations
-- **Parallelizable**: User/item updates can be computed independently
-- **Stable**: Direct analytical optimization prevents gradient instability
-- **Batch Processing**: Ideal for offline recommendation systems
+Offline batch processing
 
-**❌ Disadvantages:**
-- **Memory Intensive**: Requires matrix inversions and more storage
-- **Computational Cost**: O(k³ + nk²) complexity per iteration
-- **Batch Only**: Not suitable for real-time online learning
+High-accuracy systems
 
-### 🔹 Stochastic Gradient Descent (SGD)
-SGD updates factors incrementally using gradient-based optimization for each observed rating.
+Scenarios where parallel processing is possible
 
-```cpp
-// SGD update rules
-error = R_ij - dot(U_i, V_j)
-U_i += learning_rate * (error * V_j - lambda * U_i)
-V_j += learning_rate * (error * U_i - lambda * V_j)
-```
+🔹 Stochastic Gradient Descent (SGD)
+How It Works:
 
-**✅ Advantages:**
-- **Memory Efficient**: Low memory footprint with O(nk) complexity
-- **Online Learning**: Supports real-time model updates
-- **Simple Implementation**: Straightforward gradient-based approach
-- **Scalable**: Works well with streaming data
+Initialize U and V with small values
 
-**❌ Disadvantages:**
-- **Slower Convergence**: Requires more iterations for comparable accuracy
-- **Parameter Sensitive**: Highly dependent on learning rate tuning
-- **Sequential Processing**: Limited parallelization opportunities
+For each known rating:
 
----
+Compute error: e = rating - prediction
 
-## 🏗️ Project Architecture
+Update U and V using gradient descent
 
-```
+Repeat over many iterations
+
+Pseudocode:
+
+cpp
+Copiar
+Editar
+for each (i, j, rating) in data:
+    error = rating - dot(U[i], V[j])
+    U[i] += η * (error * V[j] - λ * U[i])
+    V[j] += η * (error * U[i] - λ * V[j])
+Best for:
+
+Online/streaming systems
+
+Low-memory environments
+
+Simple implementations
+
+🏗️ Project Architecture
+css
+Copiar
+Editar
 📦 movie-recommendation-cpp/
-├── 📁 data/
-│   └── 📄 ratings.csv              # Preprocessed MovieLens 100K dataset
-├── 📁 include/
-│   ├── 📄 ALS.hpp                  # ALS algorithm header
-│   ├── 📄 SGD.hpp                  # SGD algorithm header
-│   ├── 📄 MatrixFactorization.hpp  # Base class interface
-│   └── 📄 utils.hpp                # Utility functions and metrics
-├── 📁 src/
-│   ├── 📄 ALS.cpp                  # ALS implementation
-│   ├── 📄 SGD.cpp                  # SGD implementation
-│   ├── 📄 main.cpp                 # Main program and experiments
-│   └── 📄 utils.cpp                # Helper functions
-├── 📁 results/
-│   ├── 📄 performance_metrics.txt  # Final RMSE/MAE results
-│   └── 📄 convergence_data.csv     # Iteration-by-iteration metrics
-├── 📁 plots/
-│   ├── 📊 als_convergence.png      # ALS learning curves
-│   └── 📊 sgd_convergence.png      # SGD learning curves
-├── 📄 Makefile                     # Build configuration
-├── 📄 requirements.txt             # Dataset requirements
-└── 📄 README.md                    # This file
-```
+├── data/
+│   └── ratings.csv
+├── include/
+│   ├── ALS.hpp
+│   ├── SGD.hpp
+│   ├── MatrixFactorization.hpp
+│   └── utils.hpp
+├── src/
+│   ├── ALS.cpp
+│   ├── SGD.cpp
+│   ├── main.cpp
+│   └── utils.cpp
+├── results/
+│   ├── performance_metrics.txt
+│   └── convergence_data.csv
+├── plots/
+│   ├── als_convergence.png
+│   └── sgd_convergence.png
+├── Makefile
+└── README.md
+🚀 Quick Start
+Requirements
+C++17 compatible compiler
 
----
+Make
 
-## 🚀 Quick Start
+Git
 
-### Prerequisites
-- **C++17** compatible compiler (GCC 7+, Clang 5+, or MSVC 2017+)
-- **Make** build system
-- **Git** for cloning the repository
+Setup
+bash
+Copiar
+Editar
+git clone https://github.com/yourusername/movie-recommendation-cpp.git
+cd movie-recommendation-cpp
+make
+./recommender
+⚙️ Hyperparameter Tuning
+You can adjust the following in main.cpp:
 
-### Installation & Execution
+Parameter	Description	Default
+k	Latent factors	50
+lambda	Regularization	0.1
+learning_rate	SGD learning rate	0.01
+iterations	Number of training iterations	30
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/yourusername/movie-recommendation-cpp.git
-   cd movie-recommendation-cpp
-   ```
+📊 Evaluation Metrics
+📏 RMSE (Root Mean Squared Error)
+Penalizes large errors
 
-2. **Download the dataset:**
-   ```bash
-   # The MovieLens 100K dataset will be automatically processed
-   # Or manually download from: https://grouplens.org/datasets/movielens/100k/
-   ```
+Sensitive to outliers
 
-3. **Build the project:**
-   ```bash
-   make clean && make
-   ```
+Lower = better
 
-4. **Run the comparative analysis:**
-   ```bash
-   ./recommender
-   ```
+📐 MAE (Mean Absolute Error)
+Measures average absolute difference
 
-5. **View results:**
-   ```bash
-   # Performance metrics
-   cat results/performance_metrics.txt
-   
-   # Convergence analysis
-   cat results/convergence_data.csv
-   ```
+More robust to outliers
 
----
+Lower = better
 
-## ⚙️ Configuration & Hyperparameters
+In our results:
 
-Customize the algorithms by modifying these parameters in `main.cpp`:
+Metric	ALS	SGD
+RMSE	0.6849	0.8357
+MAE	0.5263	0.6667
 
-| Parameter | Description | Default | Range |
-|-----------|-------------|---------|-------|
-| `k` | Number of latent factors | 50 | 10-200 |
-| `lambda` | Regularization parameter | 0.1 | 0.001-1.0 |
-| `learning_rate` | SGD learning rate | 0.01 | 0.001-0.1 |
-| `max_iterations` | Training iterations | 30 | 10-100 |
-| `train_ratio` | Training/test split | 0.8 | 0.7-0.9 |
+🔬 Research Findings
+When to Use ALS?
+You have batch/offline training time
 
-### Example Configuration:
-```cpp
-// Optimal parameters found through experimentation
-const int k = 50;              // Latent factors
-const double lambda = 0.1;     // Regularization
-const double eta = 0.01;       // SGD learning rate
-const int iterations = 30;     // Max iterations
-```
+You need high accuracy
 
----
+You can parallelize computation
 
-## 📈 Evaluation Metrics
+When to Use SGD?
+You need online or incremental learning
 
-### Root Mean Squared Error (RMSE)
-Measures the square root of the average squared differences between predicted and actual ratings.
+You have limited memory or compute
 
-```cpp
-RMSE = sqrt(Σ(predicted - actual)² / n)
-```
+You prefer simpler implementation
 
-### Mean Absolute Error (MAE)
-Calculates the average absolute differences between predictions and ground truth.
+📚 Dataset Information
+Dataset: MovieLens 100K
 
-```cpp
-MAE = Σ|predicted - actual| / n
-```
+943 users, 1,682 movies
 
-**Lower values indicate better performance for both metrics.**
+100,000 total ratings
 
----
+Rating scale: 1 to 5 stars
 
-## 🔬 Research Findings & Insights
+Format: user_id, item_id, rating
 
-### Algorithm Selection Guidelines
-
-**Choose ALS when:**
-- ✅ **Batch processing** is acceptable
-- ✅ **High accuracy** is the primary requirement
-- ✅ **Computational resources** are available
-- ✅ **Parallel processing** can be leveraged
-- ✅ **Offline recommendations** are sufficient
-
-**Choose SGD when:**
-- ✅ **Online learning** is required
-- ✅ **Memory constraints** are significant  
-- ✅ **Real-time updates** are necessary
-- ✅ **Simple implementation** is preferred
-- ✅ **Streaming data** scenarios
-
-### Performance Analysis Summary
-
-| Aspect | ALS | SGD |
-|--------|-----|-----|
-| **Accuracy** | Superior (18.45% better RMSE) | Good baseline performance |
-| **Convergence** | Fast (10 iterations) | Gradual (30+ iterations) |
-| **Memory Usage** | Higher | Lower |
-| **Parallelization** | Excellent | Limited |
-| **Implementation** | Complex (matrix ops) | Simple (gradient updates) |
-| **Use Case** | Batch/offline systems | Online/streaming systems |
-
----
-
-## 🛠️ Advanced Features & Optimization
-
-### Code Optimizations Implemented:
-- **Memory-efficient** sparse matrix representations
-- **Vectorized operations** for improved performance
-- **Cache-friendly** data access patterns
-- **Early stopping** based on validation metrics
-- **Regularization** to prevent overfitting
-
-### Future Enhancements:
-- [ ] **Parallel ALS** implementation using OpenMP
-- [ ] **Mini-batch SGD** for improved stability
-- [ ] **Adaptive learning rates** (Adam, RMSprop)
-- [ ] **Implicit feedback** support
-- [ ] **Deep learning hybrid** models
-- [ ] **Distributed computing** with Apache Spark
-
----
-
-## 📚 Dataset Information
-
-This project uses the **MovieLens 100K** dataset:
-- **100,000 ratings** from 943 users on 1,682 movies
-- **Rating scale**: 1-5 stars
-- **Sparsity**: ~95% (typical of real-world scenarios)
-- **Format**: CSV with columns (user_id, item_id, rating)
-
-The dataset simulates a real-world scenario similar to Netflix, where the vast majority of user-item pairs are unobserved, making accurate prediction challenging and practically relevant.
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Here's how you can help:
-
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
-
-### Areas for Contribution:
-- Performance optimizations
-- Additional algorithms (NMF, Deep Learning)
-- Better visualization tools
-- Code documentation improvements
-- Bug fixes and testing
-
----
-
-## 📝 Citation
-
-If you use this code in your research, please cite:
-
-```bibtex
-@misc{basantes2024movie,
-  title={A C++ Implementation and Comparative Study of ALS and SGD for Movie Recommendation Using Matrix Factorization},
-  author={Basantes Balcazar, Andres Alexander},
-  year={2024},
-  institution={Universidad Yachay Tech},
-  url={https://github.com/yourusername/movie-recommendation-cpp}
-}
-```
-
----
-
-## 👨‍💻 Author
-
-**Andres Alexander Basantes Balcazar**  
-🎓 School of Mathematical and Computational Sciences  
-🏫 Universidad Yachay Tech, Ecuador  
-📧 [andres.basantes@yachaytech.edu.ec](mailto:andres.basantes@yachaytech.edu.ec)  
-🔗 [LinkedIn](https://linkedin.com/in/yourusername) | [GitHub](https://github.com/yourusername)
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- **GroupLens Research** for providing the MovieLens dataset
-- **Universidad Yachay Tech** for academic support
-- **Netflix Prize** competition for inspiring matrix factorization research
-- **Open source community** for C++ libraries and tools
-
----
-
-<div align="center">
-
-**⭐ Star this repository if you found it helpful! ⭐**
-
-Made with ❤️ for the recommender systems community
-
-</div>
+👨‍💻 Author
+Andres Alexander Basantes Balcazar
+School of Mathematical and Computational Sciences
+Universidad Yachay Tech – Ecuador
+📧 andres.basantes@yachaytech.edu.ec
