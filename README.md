@@ -116,8 +116,13 @@ High-accuracy systems
 
 Scenarios where parallel processing is possible
 
+---
 
-###🔹 Stochastic Gradient Descent (SGD)
+## 🧠 Algorithms Implemented
+
+### 🔹 Stochastic Gradient Descent (SGD)
+
+
 How It Works:
 
 Initialize U and V with small values
